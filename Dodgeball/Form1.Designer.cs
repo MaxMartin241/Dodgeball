@@ -36,31 +36,38 @@
             // 
             // startButton
             // 
+            this.startButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.startButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.startButton.ForeColor = System.Drawing.SystemColors.ControlText;
             this.startButton.Location = new System.Drawing.Point(282, 116);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(193, 100);
             this.startButton.TabIndex = 0;
             this.startButton.Text = "Start";
-            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.UseVisualStyleBackColor = false;
             // 
             // leaderBoredButton
             // 
+            this.leaderBoredButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.leaderBoredButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.leaderBoredButton.Location = new System.Drawing.Point(282, 222);
             this.leaderBoredButton.Name = "leaderBoredButton";
             this.leaderBoredButton.Size = new System.Drawing.Size(193, 100);
             this.leaderBoredButton.TabIndex = 1;
             this.leaderBoredButton.Text = "Leaderbored";
-            this.leaderBoredButton.UseVisualStyleBackColor = true;
+            this.leaderBoredButton.UseVisualStyleBackColor = false;
             this.leaderBoredButton.Click += new System.EventHandler(this.button2_Click);
             // 
             // rulesButton
             // 
+            this.rulesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.rulesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rulesButton.Location = new System.Drawing.Point(282, 328);
             this.rulesButton.Name = "rulesButton";
             this.rulesButton.Size = new System.Drawing.Size(193, 100);
             this.rulesButton.TabIndex = 2;
             this.rulesButton.Text = "Rules";
-            this.rulesButton.UseVisualStyleBackColor = true;
+            this.rulesButton.UseVisualStyleBackColor = false;
             this.rulesButton.Click += new System.EventHandler(this.rulesButton_Click);
             // 
             // label1
@@ -77,6 +84,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.OrangeRed;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.rulesButton);
