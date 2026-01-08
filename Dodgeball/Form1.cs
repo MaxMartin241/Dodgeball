@@ -27,5 +27,11 @@ namespace Dodgeball
             rulesForm rules = new rulesForm();
             rules.Show();
         }
+
+        private void startButton_Click(object sender, EventArgs e)
+        {
+            gameForm game = new gameForm();
+            game.Show();
+        }
     }
 }
