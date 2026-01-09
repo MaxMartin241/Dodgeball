@@ -17,10 +17,14 @@ namespace Dodgeball
 
         Rectangle redPlayerBounds = new Rectangle(400, 200, 27, 27);
 
+        Rectangle middlebar = new Rectangle(408, 0, 10, 1000);
+
         SolidBrush blueBrush = new SolidBrush(Color.Blue);
         SolidBrush redBrush = new SolidBrush(Color.Red);
 
         SolidBrush ballredBrush = new SolidBrush(Color.DarkRed);
+
+        SolidBrush blackBrush = new SolidBrush(Color.Black);
 
         Boolean wPressed = false;//red control buttons
 
@@ -39,6 +43,16 @@ namespace Dodgeball
         int redStepSize = 5;
         int blueStepSize = 5;
 
+        int[] redjumpSpeeds = new int[5] { -15, -11, -8, -5, -2 };
+        int[] bluejumpSpeeds = new int[5] { -15, -11, -8, -5, -2 };
+
+        bool redIsJumping = false;
+        bool redCanJump = true;
+
+        bool blueIsJumping = false;
+        bool blueCanJump = true;
+
+
 
         public gameForm()
         {
@@ -56,6 +70,8 @@ namespace Dodgeball
             e.Graphics.FillRectangle(redBrush, redPlayer);
             e.Graphics.FillRectangle(blueBrush, bluePlayer);
 
+            e.Graphics.FillRectangle(blackBrush, middlebar);
+
             using (SolidBrush ballRedBrush = new SolidBrush(Color.Red))//calling dodgeball to make 2
             {
                 Dodgeball(e.Graphics, ballRedBrush, 100, 150);
@@ -72,39 +88,32 @@ namespace Dodgeball
             g.FillEllipse(ballRedBrush, x, y, size, size);//empty values for ball
         }
 
+
+
         private void gameTimer_Tick(object sender, EventArgs e)
         {
             redMove();
             blueMove();
             Invalidate();
-            
+
         }
+
+
         private void redMove()
         {
-            if (wPressed && redPlayer.Y > 0)
-                redJump();
-
-            if (sPressed && redPlayer.Y < this.Height - redPlayer.Height - 45)
-                redThrow();
-
-
             if (aPressed && redPlayer.X > 0)
                 redPlayer.X -= redStepSize;
-            if (dPressed && redPlayer.X < this.Width - redPlayer.Width - 30)
+
+            if (dPressed && redPlayer.X < 406 - redPlayer.Width)
                 redPlayer.X += redStepSize;
         }
         private void blueMove()
         {
             //run into walls
-            if (upPressed && bluePlayer.Y > 0)
-                blueJump();
-
-            if (downPressed && bluePlayer.Y < this.Height - bluePlayer.Height - 50)
-                blueThrow();
-
-            if (leftPressed && bluePlayer.X > 0)
+            if (leftPressed && bluePlayer.X > 415)
                 bluePlayer.X -= blueStepSize;
-            if (rightPressed && bluePlayer.X < this.Width - bluePlayer.Width - 20)
+
+            if (rightPressed && bluePlayer.X < Width - bluePlayer.Width - 20)
                 bluePlayer.X += blueStepSize;
         }
 
@@ -112,33 +121,15 @@ namespace Dodgeball
         {
             switch (e.KeyCode)
             {
-                //red
-                case Keys.W:
-                    wPressed = false;
-                    break;
-                case Keys.S:
-                    sPressed = false;
-                    break;
-                case Keys.A:
-                    aPressed = false;
-                    break;
-                case Keys.D:
-                    dPressed = false;
-                    break;
+                case Keys.W: wPressed = false; break;
+                case Keys.S: sPressed = false; break;
+                case Keys.A: aPressed = false; break;
+                case Keys.D: dPressed = false; break;
 
-                //blue
-                case Keys.Up:
-                    upPressed = false;
-                    break;
-                case Keys.Down:
-                    downPressed = false;
-                    break;
-                case Keys.Left:
-                    leftPressed = false;
-                    break;
-                case Keys.Right:
-                    rightPressed = false;
-                    break;
+                case Keys.Up: upPressed = false; break;
+                case Keys.Down: downPressed = false; break;
+                case Keys.Left: leftPressed = false; break;
+                case Keys.Right: rightPressed = false; break;
             }
         }
 
@@ -146,43 +137,75 @@ namespace Dodgeball
         {
             switch (e.KeyCode)
             {
-                //red
+                // RED
                 case Keys.W:
-                    wPressed = true;
-                    break;
-                case Keys.S:
-                    sPressed = true;
-                    break;
-                case Keys.A:
-                    aPressed = true;
-                    break;
-                case Keys.D:
-                    dPressed = true;
+                    if (redCanJump && !redIsJumping)
+                    {
+                        redCanJump = false;
+                        redIsJumping = true;
+                        _ = redJump(); // jump ONCE
+                    }
                     break;
 
+                case Keys.S: sPressed = true; break;
+                case Keys.A: aPressed = true; break;
+                case Keys.D: dPressed = true; break;
 
-                //blue
+                // BLUE
                 case Keys.Up:
-                    upPressed = true;
+                    if (blueCanJump && !blueIsJumping)
+                    {
+                        blueCanJump = false;
+                        blueIsJumping = true;
+                        _ = blueJump(); // jump ONCE
+                    }
                     break;
-                case Keys.Down:
-                    downPressed = true;
-                    break;
-                case Keys.Left:
-                    leftPressed = true;
-                    break;
-                case Keys.Right:
-                    rightPressed = true;
-                    break;
+                case Keys.Down: downPressed = true; break;
+                case Keys.Left: leftPressed = true; break;
+                case Keys.Right: rightPressed = true; break;
             }
         }
-        private void redJump()
+        private async Task redJump()
         {
+            // jump up
+            for (int i = 0; i < redjumpSpeeds.Length; i++)
+            {
+                redPlayer.Y += redjumpSpeeds[i];
+                await Task.Delay(15);
+            }
 
+            // fall down
+            Array.Reverse(redjumpSpeeds);
+            for (int i = 0; i < redjumpSpeeds.Length; i++)
+            {
+                redPlayer.Y -= redjumpSpeeds[i];
+                await Task.Delay(10);
+            }
+            Array.Reverse(redjumpSpeeds);
+
+            redIsJumping = false;
+            redCanJump = true;
         }
-        private void blueJump()
+        private async Task blueJump()
         {
+            // jump up
+            for (int i = 0; i < bluejumpSpeeds.Length; i++)
+            {
+                bluePlayer.Y += bluejumpSpeeds[i];
+                await Task.Delay(15);
+            }
 
+            // fall down
+            Array.Reverse(bluejumpSpeeds);
+            for (int i = 0; i < bluejumpSpeeds.Length; i++)
+            {
+                bluePlayer.Y -= bluejumpSpeeds[i];
+                await Task.Delay(10);
+            }
+            Array.Reverse(bluejumpSpeeds);
+
+            blueIsJumping = false;
+            blueCanJump = true;
         }
 
 
@@ -194,6 +217,11 @@ namespace Dodgeball
         private void blueThrow()
         {
 
+        }
+
+        private void gameForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
         }
     }
 }
