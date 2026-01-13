@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,6 +23,9 @@ namespace Dodgeball
         bool aPressed, dPressed;
         bool leftPressed, rightPressed;
 
+        bool sHeld = false;
+        bool downHeld = false;
+
         int gravity = 2;
         int jumpForce = -25;
 
@@ -29,9 +33,16 @@ namespace Dodgeball
         int blueVelocityY = 0;
 
         int groundY = 400;
+        int roofY = 140;
 
         int[] redStepSizes = new int[4] { 1, 2, 3, 4};
         int[] blueStepSizes = new int[4] { 1, 2, 3, 4 };
+
+        int ballX = 900;
+        int ballY = 500;
+        int ballSpeed = 6;
+
+        bool ballNeedsMove = false;
 
         public gameForm()
         {
@@ -50,6 +61,7 @@ namespace Dodgeball
             BlueMove();
             ApplyRedGravity();
             ApplyBlueGravity();
+            BallMove();
             Invalidate();
         }
 
@@ -61,9 +73,11 @@ namespace Dodgeball
 
             using (SolidBrush ballBrush = new SolidBrush(Color.DarkRed))
             {
-                DrawBall(e.Graphics, ballBrush, 100, 150);
+                DrawBall(e.Graphics, ballBrush, ballX, ballY);
                 DrawBall(e.Graphics, ballBrush, 200, 150);
+                
             }
+            
         }
 
         private void DrawBall(Graphics g, SolidBrush brush, int x, int y)
@@ -84,9 +98,23 @@ namespace Dodgeball
                     {
                         redVelocityY = jumpForce;
                         wHeld = true;
+                        if (redPlayer.Y < roofY)
+                        {
+                            redPlayer.Y = roofY;
+                        }
                     }
                     break;
 
+                case Keys.S:
+                    if (!sHeld)
+                    {
+                        sHeld = true;
+                        ballX = redPlayer.X;
+                        ballY = redPlayer.Y;
+                        BallMove();
+                        ballNeedsMove = true;
+                    }
+                    break;
                 // BLUE
                 case Keys.Left: leftPressed = true; break;
                 case Keys.Right: rightPressed = true; break;
@@ -96,6 +124,10 @@ namespace Dodgeball
                     {
                         blueVelocityY = jumpForce;
                         upHeld = true;
+                        if (bluePlayer.Y < roofY)
+                        {
+                            bluePlayer.Y = roofY;
+                        }
                     }
                     break;
             }
@@ -108,6 +140,7 @@ namespace Dodgeball
                 case Keys.A: aPressed = false; break;
                 case Keys.D: dPressed = false; break;
                 case Keys.W: wHeld = false; break;
+                case Keys.S: sHeld = false; break;
 
                 case Keys.Left: leftPressed = false; break;
                 case Keys.Right: rightPressed = false; break;
@@ -199,6 +232,21 @@ namespace Dodgeball
             {
                 bluePlayer.Y = groundY;
                 blueVelocityY = 0;
+            }
+
+        }
+
+
+        private async Task BallMove()
+        {
+            if (ballNeedsMove)
+            {
+                for (int i = 0; i < ((800 - ballX)/ballSpeed) + 5; i++)
+                {
+                    ballX += ballSpeed;
+                    await Task.Delay(15);
+                }
+                ballNeedsMove = false;
             }
         }
     }
