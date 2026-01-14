@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -40,9 +41,17 @@ namespace Dodgeball
 
         int ballX = 900;
         int ballY = 500;
-        int ballSpeed = 6;
+        int ballSpeed = 20;
 
         bool ballNeedsMove = false;
+
+        int[] balls = new int[4] { 1, 2, 3, 4 };
+        int[] ballXs = new int[6] { 900, 900, 900, 900, 900, 900 };
+        int[] ballYs = new int[6] {500, 500, 500, 500, 500, 500 };
+
+        bool throwDelay = true;
+        Stopwatch throwDelayTime = Stopwatch.StartNew();
+
 
         public gameForm()
         {
@@ -62,6 +71,7 @@ namespace Dodgeball
             ApplyRedGravity();
             ApplyBlueGravity();
             BallMove();
+            DelayTime();
             Invalidate();
         }
 
@@ -73,8 +83,11 @@ namespace Dodgeball
 
             using (SolidBrush ballBrush = new SolidBrush(Color.DarkRed))
             {
+                for (int i = 0; i < balls.Length; i++)
+                {
+                    DrawBall(e.Graphics, ballBrush, ballXs[i], ballYs[i]);
+                }
                 DrawBall(e.Graphics, ballBrush, ballX, ballY);
-                DrawBall(e.Graphics, ballBrush, 200, 150);
                 
             }
             
@@ -106,13 +119,31 @@ namespace Dodgeball
                     break;
 
                 case Keys.S:
-                    if (!sHeld)
+                    if (throwDelay)
                     {
-                        sHeld = true;
-                        ballX = redPlayer.X;
-                        ballY = redPlayer.Y;
-                        BallMove();
-                        ballNeedsMove = true;
+                        if (!sHeld)
+                        {
+                            sHeld = true;
+                            if (ballXs[1] == 900)
+                            {
+                                ballXs[1] = redPlayer.X;
+                                ballYs[1] = redPlayer.Y;
+                            }
+                            else if (ballXs[2] == 900)
+                            {
+                                ballXs[2] = redPlayer.X;
+                                ballYs[2] = redPlayer.Y;
+                            }
+                            else
+                            {
+                                ballXs[3] = redPlayer.X;
+                                ballYs[3] = redPlayer.Y;
+                            }
+                                ballNeedsMove = true;
+                            throwDelay = false;
+                            throwDelayTime.Start();
+                            BallMove();
+                        }
                     }
                     break;
                 // BLUE
@@ -241,12 +272,47 @@ namespace Dodgeball
         {
             if (ballNeedsMove)
             {
-                for (int i = 0; i < ((800 - ballX)/ballSpeed) + 5; i++)
+                throwDelay = false;
+                if (Convert.ToInt16(ballXs[1]) == redPlayer.X)
                 {
-                    ballX += ballSpeed;
-                    await Task.Delay(15);
+                    while(ballXs[1]<900)
+                    {
+                        ballXs[1] += ballSpeed;
+                        await Task.Delay(5);
+                    }
+                    ballXs[1] = 900;
                 }
+                if (Convert.ToInt16(ballXs[2]) == redPlayer.X)
+                {
+                    while (ballXs[2]<900)
+                    {
+                        ballXs[2] += ballSpeed;
+                        await Task.Delay(5);
+                    }
+                    ballXs[2] = 900;
+                }
+                if (Convert.ToInt16(ballXs[3]) == redPlayer.X)
+                {
+                    while (ballXs[3] < 900)
+                    {
+                        ballXs[3] += ballSpeed;
+                        await Task.Delay(5);
+                    }
+                    ballXs[3] = 900;
+                }
+
                 ballNeedsMove = false;
+            }
+        }
+
+        private void DelayTime()
+        {
+            if (!throwDelay && throwDelayTime.ElapsedMilliseconds >= 500)
+            {
+                    throwDelay = true;
+                    throwDelayTime.Stop();
+                    throwDelayTime.Reset();
+                    throwDelay = true;
             }
         }
     }
