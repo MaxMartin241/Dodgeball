@@ -36,7 +36,7 @@ namespace Dodgeball
         int groundY = 400;
         int roofY = 140;
 
-        int[] redStepSizes = new int[4] { 1, 2, 3, 4};
+        int[] redStepSizes = new int[4] { 1, 2, 3, 4 };
         int[] blueStepSizes = new int[4] { 1, 2, 3, 4 };
 
         int ballX = 900;
@@ -45,12 +45,30 @@ namespace Dodgeball
 
         bool ballNeedsMove = false;
 
-        int[] balls = new int[4] { 1, 2, 3, 4 };
-        int[] ballXs = new int[6] { 900, 900, 900, 900, 900, 900 };
-        int[] ballYs = new int[6] {500, 500, 500, 500, 500, 500 };
+        int[] balls = new int[7] { 1, 2, 3, 4, 5, 6, 7 };
+        int[] ballXs = new int[7] { 900, 900, 900, 900, 900, 900, 900 };
+        int[] ballYs = new int[7] { 500, 500, 500, 500, 500, 500, 500 };
+
+        bool blueBallNeedsMove = false;
 
         bool throwDelay = true;
         Stopwatch throwDelayTime = Stopwatch.StartNew();
+
+        bool blueThrowDelay = true;
+        Stopwatch blueThrowDelayTime = Stopwatch.StartNew();
+
+        int redScore = 0;
+        int blueScore = 0;
+
+        int ballThatHit = 0;
+
+        bool redIsHit = false;
+
+        int blueBallThatHit = 0;
+
+        bool blueIsHit = false;
+
+
 
 
         public gameForm()
@@ -72,6 +90,8 @@ namespace Dodgeball
             ApplyBlueGravity();
             BallMove();
             DelayTime();
+            BlueDelayTime();
+            CheackForHit();
             Invalidate();
         }
 
@@ -88,9 +108,9 @@ namespace Dodgeball
                     DrawBall(e.Graphics, ballBrush, ballXs[i], ballYs[i]);
                 }
                 DrawBall(e.Graphics, ballBrush, ballX, ballY);
-                
+
             }
-            
+
         }
 
         private void DrawBall(Graphics g, SolidBrush brush, int x, int y)
@@ -139,7 +159,7 @@ namespace Dodgeball
                                 ballXs[3] = redPlayer.X;
                                 ballYs[3] = redPlayer.Y;
                             }
-                                ballNeedsMove = true;
+                            ballNeedsMove = true;
                             throwDelay = false;
                             throwDelayTime.Start();
                             BallMove();
@@ -161,6 +181,35 @@ namespace Dodgeball
                         }
                     }
                     break;
+
+                case Keys.Down:
+                    if (blueThrowDelay)
+                    {
+                        if (!downHeld)
+                        {
+                            downHeld = true;
+                            if (ballXs[4] == 900)
+                            {
+                                ballXs[4] = bluePlayer.X;
+                                ballYs[4] = bluePlayer.Y;
+                            }
+                            else if (ballXs[5] == 900)
+                            {
+                                ballXs[5] = bluePlayer.X;
+                                ballYs[5] = bluePlayer.Y;
+                            }
+                            else
+                            {
+                                ballXs[6] = bluePlayer.X;
+                                ballYs[6] = bluePlayer.Y;
+                            }
+                            blueBallNeedsMove = true;
+                            blueThrowDelay = false;
+                            blueThrowDelayTime.Start();
+                            BallMove();
+                        }
+                    }
+                    break;
             }
         }
 
@@ -176,6 +225,7 @@ namespace Dodgeball
                 case Keys.Left: leftPressed = false; break;
                 case Keys.Right: rightPressed = false; break;
                 case Keys.Up: upHeld = false; break;
+                case Keys.Down: downHeld = false; break;
             }
         }
 
@@ -240,7 +290,7 @@ namespace Dodgeball
                 }
             }
         }
-        
+
 
         private void ApplyRedGravity()
         {
@@ -268,40 +318,94 @@ namespace Dodgeball
         }
 
 
-        private async Task BallMove()
+        private async void BallMove()
         {
             if (ballNeedsMove)
             {
                 throwDelay = false;
                 if (Convert.ToInt16(ballXs[1]) == redPlayer.X)
                 {
-                    while(ballXs[1]<900)
+                    if (redIsHit == true && ballThatHit == 1)
                     {
-                        ballXs[1] += ballSpeed;
-                        await Task.Delay(5);
+                        while (ballXs[1] < 900)
+                        {
+
+                            ballXs[1] += ballSpeed;
+                            await Task.Delay(5);
+                        }
                     }
                     ballXs[1] = 900;
                 }
                 if (Convert.ToInt16(ballXs[2]) == redPlayer.X)
                 {
-                    while (ballXs[2]<900)
+                    if (redIsHit == true && ballThatHit == 2)
                     {
-                        ballXs[2] += ballSpeed;
-                        await Task.Delay(5);
+                        while (ballXs[2] < 900)
+                        {
+                            ballXs[2] += ballSpeed;
+                            await Task.Delay(5);
+                        }
                     }
                     ballXs[2] = 900;
                 }
                 if (Convert.ToInt16(ballXs[3]) == redPlayer.X)
                 {
-                    while (ballXs[3] < 900)
+                    if (redIsHit == true && ballThatHit == 3)
                     {
-                        ballXs[3] += ballSpeed;
-                        await Task.Delay(5);
+                        while (ballXs[3] < 900)
+                        {
+                            ballXs[3] += ballSpeed;
+                            await Task.Delay(5);
+                        }
                     }
                     ballXs[3] = 900;
                 }
 
                 ballNeedsMove = false;
+            }
+
+
+            if (blueBallNeedsMove)
+            {
+                blueThrowDelay = false;
+                if (Convert.ToInt16(ballXs[4]) == bluePlayer.X)
+                {
+                    if (blueIsHit == true && blueBallThatHit == 4)
+                    {
+                        while (ballXs[4] > -50)
+                        {
+                            ballXs[4] -= ballSpeed;
+                            await Task.Delay(5);
+                        }
+                    }
+                    ballXs[4] = 900;
+                }
+                if (Convert.ToInt16(ballXs[5]) == bluePlayer.X)
+                {
+                    if (blueIsHit == true && blueBallThatHit == 5)
+                    {
+                        while (ballXs[5] > 50)
+                        {
+                            ballXs[5] -= ballSpeed;
+                            await Task.Delay(5);
+                        }
+                    }
+                    ballXs[5] = 900;
+                }
+                if (Convert.ToInt16(ballXs[6]) == bluePlayer.X)
+                {
+                    if (blueIsHit == true && blueBallThatHit == 6)
+                    {
+                        while (ballXs[6] > 50)
+                        {
+                            ballXs[6] -= ballSpeed;
+                            await Task.Delay(5);
+                        }
+                    }
+                    ballXs[6] = 900;
+                }
+
+                blueBallNeedsMove = false;
             }
         }
 
@@ -309,10 +413,54 @@ namespace Dodgeball
         {
             if (!throwDelay && throwDelayTime.ElapsedMilliseconds >= 500)
             {
-                    throwDelay = true;
-                    throwDelayTime.Stop();
-                    throwDelayTime.Reset();
-                    throwDelay = true;
+                throwDelay = true;
+                throwDelayTime.Stop();
+                throwDelayTime.Reset();
+                throwDelay = true;
+            }
+        }
+        private void BlueDelayTime()
+        {
+            if (!blueThrowDelay && blueThrowDelayTime.ElapsedMilliseconds >= 500)
+            {
+                blueThrowDelay = true;
+                blueThrowDelayTime.Stop();
+                blueThrowDelayTime.Reset();
+                blueThrowDelay = true;
+            }
+        }
+        private void CheackForHit()
+        {
+            int ballWidth = 27;
+            int ballHeight = 27;
+            redIsHit = false;
+            blueIsHit = false;
+
+
+            for (int i = 0; i < balls.Length; i++)
+            {
+                Rectangle ballRect = new Rectangle(ballXs[i], ballYs[i], ballWidth, ballHeight);
+
+                if (redPlayer.IntersectsWith(ballRect))
+                {
+                    // Hit detected!
+                    redScore++;
+                    redScoreLabel.Text = redScore.ToString();
+                    ballThatHit = i;
+                    // Reset the ball off-screen (optional)
+                    redIsHit = true;
+                    ballXs[i] = 900;
+
+                }
+                if (bluePlayer.IntersectsWith(ballRect))
+                {
+                    blueScore++;
+                    blueScoreLabel.Text = blueScore.ToString();
+                    blueBallThatHit = i;
+                    // Reset the ball off-screen (optional)
+                    blueIsHit = true;
+                    ballXs[i] = 900;
+                }
             }
         }
     }
