@@ -19,7 +19,8 @@ namespace Dodgeball
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+            Leaderbored Bored = new Leaderbored();
+            Bored.Show();
         }
 
         private void rulesButton_Click(object sender, EventArgs e)
