@@ -48,6 +48,17 @@ namespace Dodgeball
             players = players
                 .OrderByDescending(p => p.Score)
                 .ToList();
+
+            leaderboredLabel.Text = "";
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                leaderboredLabel.Text +=
+                    (i + 1) + ".    " +
+                    players[i].Name + " - " +
+                    players[i].Score + Environment.NewLine;
+
+            }
         }
     }
 }

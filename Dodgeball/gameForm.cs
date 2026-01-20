@@ -1,6 +1,13 @@
-﻿using System;
+﻿//Dodgeball
+//Max Martin
+//
+//ICS3U Finel Project
+
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -8,83 +15,76 @@ namespace Dodgeball
 {
     public partial class gameForm : Form
     {
+
+
+
+        //-------------------set up - varibels-------------------
+
+        
         Rectangle bluePlayer = new Rectangle(670, 400, 35, 50);
-        Rectangle redPlayer = new Rectangle(100, 400, 35, 50);
+        Rectangle redPlayer = new Rectangle(100, 400, 35, 50);//Players
 
         Rectangle bluePlayerWinner = new Rectangle(900, 0, 70, 100);
-        Rectangle redPlayerWinner = new Rectangle(900, 0, 70, 100);
+        Rectangle redPlayerWinner = new Rectangle(900, 0, 70, 100);//winners
 
-        Rectangle middlebar = new Rectangle(408, 0, 10, 1000);
+        Rectangle middlebar = new Rectangle(408, 0, 10, 1000);//bar to divide screen
 
         SolidBrush blueBrush = new SolidBrush(Color.Blue);
         SolidBrush redBrush = new SolidBrush(Color.Red);
-        SolidBrush blackBrush = new SolidBrush(Color.Black);
+        SolidBrush blackBrush = new SolidBrush(Color.Black);//colors
 
         bool wHeld, upHeld;
         bool aPressed, dPressed;
         bool leftPressed, rightPressed;
-        bool sHeld, downHeld;
+        bool sHeld, downHeld;//basic cintrolls
 
         int gravity = 2;
-        int jumpForce = -25;
+        int jumpForce = -25;//jumping varibels
 
         int redVelocityY = 0;
         int blueVelocityY = 0;
 
-        int groundY = 400;
+        int groundY = 400;//ground
 
         int ballSpeed = 28;
 
         int[] ballXs = new int[7];
         int[] ballYs = new int[7];
         bool[] ballActive = new bool[7];
-        int[] ballDir = new int[7]; // 1 = right, -1 = left
+        int[] ballDir = new int[7]; //ball controll and orginization
 
         bool throwDelay = true;
         Stopwatch throwDelayTime = new Stopwatch();
 
         bool blueThrowDelay = true;
-        Stopwatch blueThrowDelayTime = new Stopwatch();
+        Stopwatch blueThrowDelayTime = new Stopwatch();//time between throws
 
         bool gameIsDone = false;
-        Stopwatch gameTime = new Stopwatch();
+        Stopwatch gameTime = new Stopwatch();//game langth
 
         int redScore = 0;
-        int blueScore = 0;
+        int blueScore = 0;//score
 
-        string scoreFilePath = @"C:\Users\maxwmart244\Documents\DodgBall\Highscores.txt";
-
-        public gameForm()
+        string scoreFilePath = @"C:\Users\maxwmart244\Documents\DodgBall\Highscores.txt";//file handiling
+        List<Player> players = new List<Player>()
         {
-            InitializeComponent();
-            KeyPreview = true;
+            new Player { Name = "Test", Score = 100 },
+        };
 
-            for (int i = 0; i < ballXs.Length; i++)
-                ballXs[i] = 900;
-        }
 
-        private void gameForm_Load(object sender, EventArgs e)
-        {
-            gameTimer.Start();
-            gameTime.Start();
-        }
 
-        private void gameTimer_Tick(object sender, EventArgs e)
-        {
-            RedMove();
-            BlueMove();
-            ApplyRedGravity();
-            ApplyBlueGravity();
-            BallMove();
-            DelayTime();
-            BlueDelayTime();
-            CheckForHit();
-            CheckForWin();
-            GameTime();
-            Invalidate();
-        }
 
-        private void gameForm_Paint(object sender, PaintEventArgs e)
+
+
+
+
+
+
+
+
+        //-------------------set up -----------------------------
+
+        private void gameForm_Paint(object sender, PaintEventArgs e)//creating balls, players, middle bar visibel bodey 
         {
             e.Graphics.FillRectangle(redBrush, redPlayer);
             e.Graphics.FillRectangle(blueBrush, bluePlayer);
@@ -105,15 +105,87 @@ namespace Dodgeball
             }
         }
 
-        private void gameForm_KeyDown(object sender, KeyEventArgs e)
+
+
+        public gameForm()
+        {
+            InitializeComponent();
+            KeyPreview = true;
+
+            for (int i = 0; i < ballXs.Length; i++)
+                ballXs[i] = 900;//simple set up
+        }
+
+        public class Player
+        {
+            public string Name { get; set; }
+            public int Score { get; set; }//for players and scores
+        }
+
+
+        private void gameForm_Load(object sender, EventArgs e)//checking varibels and starting game engine
+        {
+            gameTimer.Start();
+            gameTime.Start();
+            nameInputBox.Visible = false;
+            saveWinButton.Visible = false;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        //--------------big game timer-----------------
+
+
+        private void gameTimer_Tick(object sender, EventArgs e)//lots of things to check every milisecond or so
+        {
+            RedMove();
+            BlueMove();
+            ApplyRedGravity();
+            ApplyBlueGravity();
+            BallMove();
+            DelayTime();
+            BlueDelayTime();
+            CheckForHit();
+            CheckForWin();
+            GameTime();
+            Invalidate();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //----------------------player input------------------
+
+
+
+        private void gameForm_KeyDown(object sender, KeyEventArgs e)//key controlls
         {
             switch (e.KeyCode)
             {
                 // RED
                 case Keys.A: aPressed = true; break;
-                case Keys.D: dPressed = true; break;
+                case Keys.D: dPressed = true; break;//left right
 
-                case Keys.W:
+                case Keys.W://up
                     if (!wHeld)
                     {
                         redVelocityY = jumpForce;
@@ -121,7 +193,7 @@ namespace Dodgeball
                     }
                     break;
 
-                case Keys.S:
+                case Keys.S://throw
                     if (throwDelay && !sHeld)
                     {
                         sHeld = true;
@@ -145,9 +217,9 @@ namespace Dodgeball
 
                 // BLUE
                 case Keys.Left: leftPressed = true; break;
-                case Keys.Right: rightPressed = true; break;
+                case Keys.Right: rightPressed = true; break;//left right
 
-                case Keys.Up:
+                case Keys.Up://jump
                     if (!upHeld)
                     {
                         blueVelocityY = jumpForce;
@@ -155,7 +227,7 @@ namespace Dodgeball
                     }
                     break;
 
-                case Keys.Down:
+                case Keys.Down://throw
                     if (blueThrowDelay && !downHeld)
                     {
                         downHeld = true;
@@ -179,7 +251,7 @@ namespace Dodgeball
             }
         }
 
-        private void gameForm_KeyUp(object sender, KeyEventArgs e)
+        private void gameForm_KeyUp(object sender, KeyEventArgs e)//when relese button pressed = false
         {
             switch (e.KeyCode)
             {
@@ -195,41 +267,55 @@ namespace Dodgeball
             }
         }
 
-        private void RedMove()
+
+
+
+
+
+
+
+
+
+
+        //----------player output----------------
+
+
+        private void RedMove()//left right with collision
         {
             if (aPressed)
             {
-                redPlayer.X -= 5;
+                redPlayer.X -= 9;
                 if (redPlayer.X < 0)
                     redPlayer.X = 0;
             }
 
             if (dPressed)
             {
-                redPlayer.X += 5;
+                redPlayer.X += 9;
                 if (redPlayer.X > 410 - redPlayer.Width)
                     redPlayer.X = 410 - redPlayer.Width;
             }
         }
 
-        private void BlueMove()
+        private void BlueMove()//left right with collision
         {
             if (leftPressed)
             {
-                bluePlayer.X -= 5;
+                bluePlayer.X -= 9;
                 if (bluePlayer.X < 417)
                     bluePlayer.X = 417;
             }
 
             if (rightPressed)
             {
-                bluePlayer.X += 5;
+                bluePlayer.X += 9;
                 if (bluePlayer.X > 800 - bluePlayer.Width)
                     bluePlayer.X = 800 - bluePlayer.Width;
             }
         }
 
-        private void ApplyRedGravity()
+
+        private void ApplyRedGravity()//jump and falling with collision
         {
             redVelocityY += gravity;
             redPlayer.Y += redVelocityY;
@@ -247,7 +333,7 @@ namespace Dodgeball
             }
         }
 
-        private void ApplyBlueGravity()
+        private void ApplyBlueGravity()//jump and falling with collision
         {
             blueVelocityY += gravity;
             bluePlayer.Y += blueVelocityY;
@@ -265,7 +351,20 @@ namespace Dodgeball
             }
         }
 
-        private void BallMove()
+
+
+
+
+
+
+
+
+
+
+        //----------ball Output------------------
+
+
+        private void BallMove()//move ball across screen
         {
             for (int i = 0; i < ballXs.Length; i++)
             {
@@ -281,7 +380,21 @@ namespace Dodgeball
             }
         }
 
-        private void DelayTime()
+
+
+
+
+
+
+
+
+
+
+
+
+        //-----------Time Controll----------------
+
+        private void DelayTime()//wait between throws
         {
             if (!throwDelay && throwDelayTime.ElapsedMilliseconds >= 500)
             {
@@ -290,7 +403,7 @@ namespace Dodgeball
             }
         }
 
-        private void BlueDelayTime()
+        private void BlueDelayTime()//wait beetween throws
         {
             if (!blueThrowDelay && blueThrowDelayTime.ElapsedMilliseconds >= 500)
             {
@@ -298,6 +411,29 @@ namespace Dodgeball
                 blueThrowDelayTime.Reset();
             }
         }
+
+        private void GameTime()
+        {
+            int seconds = (int)gameTime.Elapsed.TotalSeconds;
+            gameTimeLabel.Text = seconds.ToString();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //------------hiting and winning------------------
+
+
 
         private void CheckForHit()
         {
@@ -325,51 +461,41 @@ namespace Dodgeball
             }
         }
 
-        private void GameTime()
-        {
-            int seconds = (int)gameTime.Elapsed.TotalSeconds;
-            gameTimeLabel.Text = seconds.ToString();
-        }
-
         private async void CheckForWin()
         {
-            if (gameTime.Elapsed.Seconds > 30)
+            if (gameIsDone) return;
+
+            if (gameTime.Elapsed.TotalSeconds > 30)
             {
+                gameIsDone = true;
                 gameTimer.Stop();
                 if (redScore > blueScore)
                 {
                     redPlayerWinner.X = 380;
                     redPlayerWinner.Y = 194;
-                    winnerLabel.Visible = true;
-                    winnerLabel.Text = "W";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "I";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "N";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "N";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "E";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "R";
 
+                    winnerLabel.Visible = true;
+                    winnerLabel.Text = "WINNER";
+
+                    if (redScore > 10)
+                    {
+                        nameInputBox.Visible = true;
+                        saveWinButton.Visible = true;
+                    }
                 }
-                else if (redScore < blueScore)
+                else if (blueScore > redScore)
                 {
                     bluePlayerWinner.X = 380;
                     bluePlayerWinner.Y = 194;
+
                     winnerLabel.Visible = true;
-                    winnerLabel.Text = "W";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "I";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "N";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "N";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "E";
-                    await Task.Delay(300);
-                    winnerLabel.Text += "R";
+                    winnerLabel.Text = "WINNER";
+
+                    if (blueScore > 10)
+                    {
+                        nameInputBox.Visible = true;
+                       saveWinButton.Visible = true;
+                    }
                 }
                 else
                 {
@@ -377,6 +503,52 @@ namespace Dodgeball
                     winnerLabel.Text = "Tie";
                 }
             }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //-------------Finel save and close------------------
+
+
+
+        private void saveWinButton_Click(object sender, EventArgs e)//save highscore
+        {
+            string playerName = nameInputBox.Text.Trim();
+
+            if (playerName == "" || playerName == "Enter name")
+                playerName = "Player";
+
+            int finalScore;
+
+            if (redScore > blueScore)
+                finalScore = redScore;
+            else
+                finalScore = blueScore;
+
+            // Only save if score > 10
+            if (finalScore > 10)
+            {
+                using (StreamWriter writer = new StreamWriter(scoreFilePath, true))
+                {
+                    writer.WriteLine(playerName);
+                    writer.WriteLine(finalScore);
+                }
+            }
+
+            // Close the game form after saving
+            this.Close();
         }
     }
 }

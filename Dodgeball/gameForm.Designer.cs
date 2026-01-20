@@ -34,6 +34,8 @@
             this.blueScoreLabel = new System.Windows.Forms.Label();
             this.gameTimeLabel = new System.Windows.Forms.Label();
             this.winnerLabel = new System.Windows.Forms.Label();
+            this.nameInputBox = new System.Windows.Forms.TextBox();
+            this.saveWinButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // gameTimer
@@ -79,11 +81,31 @@
             this.winnerLabel.Text = "label1";
             this.winnerLabel.Visible = false;
             // 
+            // nameInputBox
+            // 
+            this.nameInputBox.Location = new System.Drawing.Point(367, 255);
+            this.nameInputBox.Name = "nameInputBox";
+            this.nameInputBox.Size = new System.Drawing.Size(100, 20);
+            this.nameInputBox.TabIndex = 4;
+            this.nameInputBox.Visible = false;
+            // 
+            // saveWinButton
+            // 
+            this.saveWinButton.Location = new System.Drawing.Point(377, 281);
+            this.saveWinButton.Name = "saveWinButton";
+            this.saveWinButton.Size = new System.Drawing.Size(75, 23);
+            this.saveWinButton.TabIndex = 5;
+            this.saveWinButton.Text = "Save";
+            this.saveWinButton.UseVisualStyleBackColor = true;
+            this.saveWinButton.Click += new System.EventHandler(this.saveWinButton_Click);
+            // 
             // gameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.saveWinButton);
+            this.Controls.Add(this.nameInputBox);
             this.Controls.Add(this.winnerLabel);
             this.Controls.Add(this.gameTimeLabel);
             this.Controls.Add(this.blueScoreLabel);
@@ -107,5 +129,7 @@
         private System.Windows.Forms.Label blueScoreLabel;
         private System.Windows.Forms.Label gameTimeLabel;
         private System.Windows.Forms.Label winnerLabel;
+        private System.Windows.Forms.TextBox nameInputBox;
+        private System.Windows.Forms.Button saveWinButton;
     }
 }
