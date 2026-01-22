@@ -47,27 +47,28 @@
             // redScoreLabel
             // 
             this.redScoreLabel.AutoSize = true;
-            this.redScoreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.redScoreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.redScoreLabel.Location = new System.Drawing.Point(323, 9);
             this.redScoreLabel.Name = "redScoreLabel";
-            this.redScoreLabel.Size = new System.Drawing.Size(0, 18);
+            this.redScoreLabel.Size = new System.Drawing.Size(0, 29);
             this.redScoreLabel.TabIndex = 0;
             // 
             // blueScoreLabel
             // 
             this.blueScoreLabel.AutoSize = true;
-            this.blueScoreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.blueScoreLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blueScoreLabel.Location = new System.Drawing.Point(479, 9);
             this.blueScoreLabel.Name = "blueScoreLabel";
-            this.blueScoreLabel.Size = new System.Drawing.Size(0, 18);
+            this.blueScoreLabel.Size = new System.Drawing.Size(0, 29);
             this.blueScoreLabel.TabIndex = 1;
             // 
             // gameTimeLabel
             // 
             this.gameTimeLabel.AutoSize = true;
+            this.gameTimeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gameTimeLabel.Location = new System.Drawing.Point(13, 13);
             this.gameTimeLabel.Name = "gameTimeLabel";
-            this.gameTimeLabel.Size = new System.Drawing.Size(0, 13);
+            this.gameTimeLabel.Size = new System.Drawing.Size(0, 18);
             this.gameTimeLabel.TabIndex = 2;
             // 
             // winnerLabel

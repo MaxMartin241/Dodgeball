@@ -9,11 +9,11 @@ namespace Dodgeball
 {
     public partial class Leaderbored : Form
     {
-        string filePath = @"C:\Users\maxwmart244\Documents\DodgBall\Highscores.txt";
+        string filePath = @"C:\Users\maxwmart244\Documents\DodgBall\Highscores.txt";//file to pull from
 
         List<Player> players = new List<Player>()
         {
-            new Player { Name = "Test", Score = 100 },
+           // new Player { Name = "Test", Score = 100 },
         };
 
         public Leaderbored()
@@ -25,7 +25,7 @@ namespace Dodgeball
             public string Name { get; set; }
             public int Score { get; set; }
         }
-        private void Leaderbored_Load(object sender, EventArgs e)
+        private void Leaderbored_Load(object sender, EventArgs e)//shows everything when loed
         {
             if (!File.Exists(filePath))
                 return;
@@ -44,8 +44,7 @@ namespace Dodgeball
                 });
             }
 
-            // OPTIONAL: sort by score (highest first)
-            players = players
+            players = players//Sort best to worst
                 .OrderByDescending(p => p.Score)
                 .ToList();
 

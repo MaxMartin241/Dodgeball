@@ -20,7 +20,6 @@ namespace Dodgeball
 
         //-------------------set up - varibels-------------------
 
-        
         Rectangle bluePlayer = new Rectangle(670, 400, 35, 50);
         Rectangle redPlayer = new Rectangle(100, 400, 35, 50);//Players
 
@@ -36,13 +35,13 @@ namespace Dodgeball
         bool wHeld, upHeld;
         bool aPressed, dPressed;
         bool leftPressed, rightPressed;
-        bool sHeld, downHeld;//basic cintrolls
+        bool sHeld, downHeld;//basic controlls
 
         int gravity = 2;
         int jumpForce = -25;//jumping varibels
 
         int redVelocityY = 0;
-        int blueVelocityY = 0;
+        int blueVelocityY = 0;//if this ever goes above zero the player will start to move up
 
         int groundY = 400;//ground
 
@@ -66,12 +65,11 @@ namespace Dodgeball
         int blueScore = 0;//score
 
         string scoreFilePath = @"C:\Users\maxwmart244\Documents\DodgBall\Highscores.txt";//file handiling
+
         List<Player> players = new List<Player>()
         {
             new Player { Name = "Test", Score = 100 },
         };
-
-
 
 
 
@@ -95,7 +93,7 @@ namespace Dodgeball
 
 
 
-            using (SolidBrush ballBrush = new SolidBrush(Color.DarkRed))
+            using (SolidBrush ballBrush = new SolidBrush(Color.DarkRed))//creates balls 
             {
                 for (int i = 0; i < ballXs.Length; i++)
                 {
@@ -139,13 +137,9 @@ namespace Dodgeball
 
 
 
-
-
-
         //--------------big game timer-----------------
 
-
-        private void gameTimer_Tick(object sender, EventArgs e)//lots of things to check every milisecond or so
+        private void gameTimer_Tick(object sender, EventArgs e)//lots of things to check every tick
         {
             RedMove();
             BlueMove();
@@ -168,14 +162,7 @@ namespace Dodgeball
 
 
 
-
-
-
-
-
         //----------------------player input------------------
-
-
 
         private void gameForm_KeyDown(object sender, KeyEventArgs e)//key controlls
         {
@@ -275,10 +262,7 @@ namespace Dodgeball
 
 
 
-
-
         //----------player output----------------
-
 
         private void RedMove()//left right with collision
         {
@@ -318,9 +302,9 @@ namespace Dodgeball
         private void ApplyRedGravity()//jump and falling with collision
         {
             redVelocityY += gravity;
-            redPlayer.Y += redVelocityY;
+            redPlayer.Y += redVelocityY;//moves up
 
-            if (redPlayer.Y >= groundY)
+            if (redPlayer.Y >= groundY)//if hit roof or ground
             {
                 redPlayer.Y = groundY;
                 redVelocityY = 0;
@@ -336,9 +320,9 @@ namespace Dodgeball
         private void ApplyBlueGravity()//jump and falling with collision
         {
             blueVelocityY += gravity;
-            bluePlayer.Y += blueVelocityY;
+            bluePlayer.Y += blueVelocityY;//moves up
 
-            if (bluePlayer.Y >= groundY)
+            if (bluePlayer.Y >= groundY)//if hits roof or ground
             {
                 bluePlayer.Y = groundY;
                 blueVelocityY = 0;
@@ -359,10 +343,7 @@ namespace Dodgeball
 
 
 
-
-
         //----------ball Output------------------
-
 
         private void BallMove()//move ball across screen
         {
@@ -379,10 +360,6 @@ namespace Dodgeball
                 }
             }
         }
-
-
-
-
 
 
 
@@ -425,15 +402,7 @@ namespace Dodgeball
 
 
 
-
-
-
-
-
-
         //------------hiting and winning------------------
-
-
 
         private void CheckForHit()
         {
@@ -461,7 +430,7 @@ namespace Dodgeball
             }
         }
 
-        private async void CheckForWin()
+        private void CheckForWin()
         {
             if (gameIsDone) return;
 
@@ -512,16 +481,7 @@ namespace Dodgeball
 
 
 
-
-
-
-
-
-
-
         //-------------Finel save and close------------------
-
-
 
         private void saveWinButton_Click(object sender, EventArgs e)//save highscore
         {
@@ -543,7 +503,7 @@ namespace Dodgeball
                 using (StreamWriter writer = new StreamWriter(scoreFilePath, true))
                 {
                     writer.WriteLine(playerName);
-                    writer.WriteLine(finalScore);
+                    writer.WriteLine(finalScore);//writes score and name in the file
                 }
             }
 
